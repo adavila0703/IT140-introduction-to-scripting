@@ -1,0 +1,30 @@
+
+In responding to your classmates, compare your posts and discuss the following:
+
+What did you find interesting or relatable in your peers' posts?
+What tips can you share with your peers to help address the challenges they discussed in their initial posts?
+
+
+Answer: 
+
+1. Name one event or person that influenced you to pursue a degree in your field.
+
+I would say Ken Thompson and Guido van Rossum are have been a huge influence to pursue development.
+
+2. What is your comfort level with programming?
+
+I am currently a full stack Software Engineer at Salesloft. The primary tech stack I work with is GoLang for our backend api layer / background workers and React / TypeScript for the frontend. I started learning programming with C/C++ and eventually picked up Python / JavaScript. I would say that I am very comfortable with my primary language, picking up new languages and frameworks, working on large scale applications. 
+
+3. Which skills are you most confident in?
+
+I would say I am most confident in the backend. I am okay with frontend development, but a large code base in React or Angular can be overwhelming at times. 
+
+4. Which skills need the most improvement?
+
+
+
+5. What strategies do you plan to use to manage your time and complete assignments in this course?
+
+
+6. Reflect on the material you have reviewed so far in Module One. What questions do you have so far?
+
