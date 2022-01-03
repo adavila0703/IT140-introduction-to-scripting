@@ -4,27 +4,51 @@ In responding to your classmates, compare your posts and discuss the following:
 What did you find interesting or relatable in your peers' posts?
 What tips can you share with your peers to help address the challenges they discussed in their initial posts?
 
-
-Answer: 
+pick 2 of these:
 
 1. Name one event or person that influenced you to pursue a degree in your field.
 
-I would say Ken Thompson and Guido van Rossum are have been a huge influence to pursue development.
+I would say Ken Thompson and Guido van Rossum have been a huge influence for me to pursue development.
 
 2. What is your comfort level with programming?
 
-I am currently a full stack Software Engineer at Salesloft. The primary tech stack I work with is GoLang for our backend api layer / background workers and React / TypeScript for the frontend. I started learning programming with C/C++ and eventually picked up Python / JavaScript. I would say that I am very comfortable with my primary language, picking up new languages and frameworks, working on large scale applications. 
+I am currently a full stack Software Engineer at Salesloft. The primary tech stack I work in is GoLang for the backend api layer / background workers and React(TypeScript) for the frontend. I started learning programming with C/C++ and eventually picked up Python / JavaScript. I would say that I am very comfortable picking up new languages and frameworks, and working on large scale applications. 
 
 3. Which skills are you most confident in?
 
-I would say I am most confident in the backend. I am okay with frontend development, but a large code base in React or Angular can be overwhelming at times. 
+I would say I am most confident in the backend. 
 
 4. Which skills need the most improvement?
 
-
+Frontend development and software security. I am okay with frontend development, but a large code base in React or Angular can be overwhelming at times. Security is something I need to improve in, like tokens and authentication even for backend api's.
 
 5. What strategies do you plan to use to manage your time and complete assignments in this course?
 
+I plan to spend 1 to 3 hours a day on the class. Since I am full time remote, I am generally good at creating a schedule for myself and can focus on a strict routine / schedule. 
 
 6. Reflect on the material you have reviewed so far in Module One. What questions do you have so far?
+
+Software development heavily involves large collaboration, good communication and pair programming. It is common at work to work on a jira card or a task while pairing up with another engineer. Is this type of collaboration something we will be doing in this course?
+
+**ANSWER**
+
+Hello!
+
+My name is Angel, I currently live in the northwest suburbs of Chicago. I currently am a full stack Software Engineer for Salesloft. I have a pretty cool story, I was originally going to school for Electrical Engineering and during this process I gained a large passion for software development. I took a bit of a pause in school but continued self learning in software development outside of school, while working a full time job in the electrical field. This self learning became almost an addiction once I hit a certain learning curve, I think because I was able to just pick up languages and framework very quickly and build anything I could think of! 
+
+I even created a road map for myself and a strict schedule to attack areas I needed to get a job in the field. Eventually I was given a chance to work on a few software development projects at work, which allowed me to transferred into a development role at work and then landing in a full stack position at Salesloft. I am working to finish my Computer Science degree, although I have a full time position in the field, the degree is a final missing piece and will allow me to continue my study after my undergrad. 
+
+Name one event or person that influenced you to pursue a degree in your field.
+
+Ken Thompson and Guido van Rossum have been a huge influence for me to pursue development. 
+
+Which skills are you most confident in?
+
+I am most confident in Python but ever since I started writing GoLang at work, I have gain a huge love for the language. To me, Go is like a mix of Python and C, it is clean and elegant. 
+
+What is your comfort level with programming?
+
+The primary tech stack I work in is GoLang for the backend api layer / background workers and React(TypeScript) for the frontend. I started learning programming with C/C++ and eventually picked up Python / JavaScript. I would say that I am very comfortable picking up new languages and frameworks, and working on large scale applications. 
+
+If anyone needs help with anything, please feel free to contact me! I am always looking more coding buddies :)
 
