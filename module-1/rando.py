@@ -24,16 +24,21 @@
 # print('Acceleration of gravity: {:.2f}'.format(accel_gravity))
 
 
-import math
+# import math
 
-point_dist = 0.0
+# point_dist = 0.0
 
-x1 = 1.0
-y1 = 2.0
-x2 = 1.0
-y2 = 5.0
+# x1 = 1.0
+# y1 = 2.0
+# x2 = 1.0
+# y2 = 5.0
 
 
-math.sqrt(math.pow(x2 - x1, 2) + math.pow(y2 - y1, 2))
+# math.sqrt(math.pow(x2 - x1, 2) + math.pow(y2 - y1, 2))
 
-print('Points distance:', point_dist)
+# print('Points distance:', point_dist)
+address = '900 University Ave'
+address[0] = '6'
+address[1] = '2'
+
+print(address)
