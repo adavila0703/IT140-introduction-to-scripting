@@ -138,24 +138,14 @@ input_data = {
 for data in input_data:
     input_data[data] = input()
 
-print(f"You entered: {input_data['word1']} {input_data['word2']} {input_data['number']}")
+print(f"You entered: {input_data['word1']} {input_data['word2']} {input_data['number']}\n")
 
 password1 = f"{input_data['word1']}_{input_data['word2']}"
 password2 = f"{input_data['number']}{input_data['word1']}{input_data['number']}"
 
 print(f"First password: {password1}")
-print(f"Second password: {password2}")
+print(f"Second password: {password2}\n")
+
 print(f"Number of characters in {password1}: {len(password1)}")
 print(f"Number of characters in {password2}: {len(password2)}")
 
-# FIXME (1): Finish reading another word and an integer into variables. 
-# Output all the values on a single line
-favorite_color = input('Enter favorite color:\n')
-
-
-# FIXME (2): Output two password options
-password1 = favorite_color
-print('\nFirst password:')
-
-
-# FIXME (3): Output the length of the two password options
