@@ -25,3 +25,9 @@ lebron = Player('Lebron James', '23', 'Small forward', 'Los Angeles Lakers')
 
 print(cam.name + '(#' + cam.number + ')' + ' is a ' + cam.position + ' for the ' + cam.team + '.')
 print(lebron.name + '(#' + lebron.number + ')' + ' is a ' + lebron.position + ' for the ' + lebron.team + '.')
+
+rando = 3
+woop = 1
+
+if (rando > 3) or (woop < 4):
+    pass
