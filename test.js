@@ -1,4 +1,3 @@
-const testOne = true;
-const testTwo = false;
+const hello = 'helloworld';
 
-console.log(testOne == testTwo);
+console.log(hello);
