@@ -104,17 +104,17 @@ if __name__ == '__main__':
     num_dollars, num_quarters, num_dimes, num_nickels, num_pennies = exact_change(
         input_val)
 
-    if num_dollars > 0:
+    if num_dollars > 0 and num_dollars != None:
         print(get_output(num_dollars, 'dollar'))
 
-    if num_quarters > 0:
+    if num_quarters > 0 and num_quarters != None:
         print(get_output(num_quarters, 'quarter'))
 
-    if num_dimes > 0:
+    if num_dimes > 0 and num_dimes != None:
         print(get_output(num_dimes, 'dime'))
 
-    if num_nickels > 0:
+    if num_nickels > 0 and num_nickels != None:
         print(get_output(num_nickels, 'nickel'))
 
-    if num_pennies > 0:
+    if num_pennies > 0 and num_pennies != None:
         print(get_output(num_pennies, 'penny'))
