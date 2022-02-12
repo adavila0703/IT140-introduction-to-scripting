@@ -1,10 +1,15 @@
-def summation(num1: int, num2: int) -> int:
-    return num1 + num2
+from enum import Enum
+
+
+class test(Enum):
+    hello = 1
 
 
 def main():
-    sum = summation("hello", "world")
-    print(sum)
+    woop = test(1)
+
+    print(woop == test.hello)
+    print(woop == 1)
 
 
 if __name__ == '__main__':
