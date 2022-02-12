@@ -1,4 +1,7 @@
 from enum import Enum
+import os
+import random
+from time import sleep
 
 
 class Player:
@@ -9,18 +12,16 @@ class Player:
 
 
 class Demon:
-    def __init__(self) -> None:
-        self.name
-        self.position
-        self.health
-        self.item
+    def __init__(self, health) -> None:
+        self.name = 'Demon'
+        self.health = health
+        self.item = random.randint(50, 100)
 
 
 class King:
     def __init__(self) -> None:
-        self.name
-        self.position
-        self.health
+        self.name = 'King'
+        self.health = 1000
 
 
 class Rooms(Enum):
@@ -34,19 +35,38 @@ class Rooms(Enum):
     DUNGEON = 8
 
 
-class Movement(Enum):
-    UP = 1
-    DOWN = 2
-    LEFT = 3
-    RIGHT = 4
+def initiate_fight(villain: object, player: Player, level: int) -> None:
+    os.system('cls')
+    while True:
+        hit = random.randint(5 * level, 20 * level)
+        print(f'{player.name} is attacking the {villain.name} for {hit}')
+        villain.health -= hit
 
+        print(
+            f'\n{player.name} Health: {player.health}\n{villain.name} Health: {villain.health}\n')
 
-def drop_item():
-    pass
+        if villain.health <= 0:
+            if villain.name == 'King':
+                print('You won the game! Congrats!')
+                exit()
+            print(
+                f'You won the fight! You gained {100 + villain.item} health!')
+            player.health += villain.item + 100
+            return
 
+        hit = random.randint(5 * level, 10 * level)
+        print(f'{villain.name} is attacking the {player.name} for {hit}')
+        player.health -= hit
 
-def initiate_fight():
-    pass
+        print(
+            f'\n{player.name} Health: {player.health}\n{villain.name} Health: {villain.health}\n')
+
+        if player.health <= 0:
+            print('You lose...')
+            exit()
+
+        sleep(1)
+        os.system('cls')
 
 
 def get_room(room) -> str:
@@ -101,6 +121,7 @@ def room_movement(player: Player):
     new_room = movement_option(room_possibilities)
 
     player.position = new_room
+    return new_room
 
 
 def movement_option(*args) -> Rooms:
@@ -117,11 +138,54 @@ def movement_option(*args) -> Rooms:
                 f"Error - {ve}: input must be a number between 1 and 4, try again.")
 
 
+def check_if_demon_is_alive(demons: dict, player_position: Rooms) -> bool:
+    for demon in demons:
+        demon_room = Rooms(int(demon))
+        demon_object: Demon = demons[demon]
+        if demon_room == player_position and demon_object.health >= 100:
+            return True, demon_object
+    return False, None
+
+
+def demons_get_stronger(demons: dict):
+    print('Demons grow stronger')
+    for demon in demons:
+        obj = demons[demon]
+        if obj.health > 0:
+            obj.health += random.randint(50, 80)
+
+
 def main():
     player = Player('Angel', Rooms.CENTRAL_WING, 100)
+    demons = {
+        '1': Demon(100),
+        '2': Demon(100),
+        '3': Demon(100),
+        '4': Demon(100),
+        '5': Demon(100),
+        '6': Demon(100),
+        '7': Demon(100),
+    }
+    king = King()
+    level = 1
+
+    check, demon = check_if_demon_is_alive(demons, player.position)
+    if check:
+        initiate_fight(demon, player, level)
+
+    demons_get_stronger(demons)
 
     while True:
-        room_movement(player)
+        player_position = room_movement(player)
+
+        check, demon = check_if_demon_is_alive(demons, player_position)
+        if check:
+            initiate_fight(demon, player, level)
+
+        if not check and player_position == Rooms.DUNGEON:
+            initiate_fight(king, player, level)
+
+        level += 0.5
 
 
 if __name__ == '__main__':
