@@ -1,5 +1,12 @@
+'''
+    Author: Angel Davila
+    Github: https://github.com/adavila0703
+    University: Southern New Hampshire University
+    Date: 2/12/2022
+    Build time: 5 hours
+'''
+
 from enum import Enum
-from multiprocessing.sharedctypes import Value
 import os
 import random
 from time import sleep
@@ -12,9 +19,12 @@ class Items(Enum):
     INCREASE_DAMAGE = 2
     # allows you to take no damage for one round
     UNTOUCHABLE = 3
+    # gives you 3 hit combo
+    THREE_HIT_COMBO = 4
 
 
 class Rooms(Enum):
+    """Enums representing the ares which you can travel"""
     CENTRAL_WING = 1
     NORTH_WING = 2
     WEST_WING = 3
@@ -25,7 +35,53 @@ class Rooms(Enum):
     DUNGEON = 8
 
 
+class Const:
+    """Constants to avoid so many magic numbers in the code base"""
+    CANCEL_ITEM_USE = 99
+    MINIMUM_HIT_POINTS = 25
+    MAXIMUM_HIT_POINTS = 50
+    KING_STARTING_HEALTH = 10000
+
+    # player specific
+    PLAYER_MIN_HEALTH_INCREASE = 80
+    PLAYER_MAX_HEALTH_INCREASE = 120
+    PLAYER_POTION_BASE = 100
+    PLAYER_MIN_DAMAGE_ADDER = 25
+    PLAYER_MAX_DAMAGE_ADDER = 250
+    PLAYER_FINAL_HEALTH_INCREASE = 1500
+    PLAYER_STARTING_HEALTH = 100
+    PLAYER_STARTING_ITEMS_AMOUNT = 1
+    PLAYER_NUMBER_OF_ITEMS_DROPPED = [2, 2, 3, 3, 5, 5, 7]
+
+    # demon specific
+    DEMON_MIN_HEALTH_INCREASE = 100
+    DEMON_MAX_HEALTH_INCREASE = 200
+    DEMON_STARTING_HEALTH = 100
+
+    MAIN_GAME_TITLE = '''
+ @@@@@@@  @@@@@@@@ @@@@@@@@@@   @@@@@@  @@@  @@@       @@@@@@ @@@       @@@@@@  @@@ @@@ @@@@@@@@ @@@@@@@ 
+ @@!  @@@ @@!      @@! @@! @@! @@!  @@@ @@!@!@@@      !@@     @@!      @@!  @@@ @@! !@@ @@!      @@!  @@@
+ @!@  !@! @!!!:!   @!! !!@ @!@ @!@  !@! @!@@!!@!       !@@!!  @!!      @!@!@!@!  !@!@!  @!!!:!   @!@!!@! 
+ !!:  !!! !!:      !!:     !!: !!:  !!! !!:  !!!          !:! !!:      !!:  !!!   !!:   !!:      !!: :!! 
+ :: :  :  : :: :::  :      :    : :. :  ::    :       ::.: :  : ::.: :  :   : :   .:    : :: :::  :   : :
+
+Welcome to Demon Slayer!
+
+Here are a few items to get you started, good luck!
+
+'''
+
+
+class Errors:
+    VALUE_ERROR = 'Input must be a number or within a range of numbers that have been listed'
+
+    def log_error(runtime_error: str, display_error: str) -> None:
+        print(f'Error {runtime_error} - {display_error}')
+
+
 class GameState:
+    """Game State class which hold some game stat data"""
+
     def __init__(self) -> None:
         self.level = 1
 
@@ -38,29 +94,24 @@ class GameState:
 
 
 class Player:
-    def __init__(self, name: str, position: int, health: int) -> None:
+    """Player class"""
+
+    def __init__(self, name: str, position: int) -> None:
         self.name: str = name
         self.position: int = position
-        self.health: int = health
+        self.health: int = Const.PLAYER_STARTING_HEALTH
         self.items: list = []
         self.damage_adder: int = 0
         self.damage_adder_bool: bool = False
         self.untouchable: bool = False
         self.level = 1
+        self.three_hit_combo = False
 
     def __repr__(self) -> str:
         return self.name
 
     def raise_level(self, game_state: GameState) -> None:
         self.level = game_state.level
-        return
-
-    def item_drop(self, amount=1) -> None:
-        for _ in range(0, amount):
-            item_number = random.randint(1, 3)
-            item = Items(item_number)
-            self.items.append(item)
-            print(f'\nYou received item: {self.get_item_details(item)}\n')
         return
 
     def get_health(self) -> int:
@@ -77,32 +128,56 @@ class Player:
         self.health -= amount
         return
 
+    def get_number_of_items(self) -> int:
+        return len(self.items)
+
+    def item_drop(self, amount=1) -> None:
+        """Drops a random item, default is set to 1"""
+        for _ in range(0, amount):
+            item_number = random.randint(1, 4)
+            item = Items(item_number)
+            self.items.append(item)
+            print(f'\nYou received item: {self.get_item_details(item)}\n')
+        return
+
     def get_item_details(self, item) -> str:
+        """Get details of a specific item"""
+        # TODO: Could move this out of the player and store it in an item class
         if item == Items.HEALTH_POTION:
-            return f'Health Potion - Use this to increase your health by {100 * self.level}'
+            return f'Health Potion - Use this to increase your health by {Const.PLAYER_POTION_BASE * self.level}'
         elif item == Items.INCREASE_DAMAGE:
             return 'Increase Damage - Use this to amplify your damage'
         elif item == Items.UNTOUCHABLE:
             return 'Untouchable - Used this to receive 0 damage from your opponent'
+        elif item == Items.THREE_HIT_COMBO:
+            return 'Three Hit Combo - Used this to hit your opponent with a three hit combo!'
 
     def display_all_items(self) -> str:
+        """Outputs all existing items listed in self.items"""
         for index, item in enumerate(self.items):
             print(f'{index} - {self.get_item_details(item)}')
         print('99 - Cancel use item')
 
     def get_item_number(self) -> int:
+        """Returns the index number of the item to be used"""
         while True:
-            item = int(input('\nSelect an item\n:'))
+            try:
+                item = int(input('\nSelect an item\n:'))
 
-            if item == 99:
-                return 99
+                if cancel := Const.CANCEL_ITEM_USE == item:
+                    return cancel
 
-            if item in range(0, len(self.items)):
-                return item
+                if item in range(0, len(self.items)):
+                    return item
 
-            print('Did you choose the right number?')
+                print('Did you choose the right number?')
+            except ValueError as VALUE_ERROR:
+                Errors.log_error(VALUE_ERROR, Errors.VALUE_ERROR)
 
     def attack_or_items(self) -> None:
+        """Menu to handle if you want to continue with an attack or use an item"""
+        # TODO: This should probably only handle the use of an item
+        # Should move the menu handling to a common function
         try:
             user_input = int(
                 input('Would you like to:\n1. Attack\n2. Use item\n:'))
@@ -118,29 +193,32 @@ class Player:
 
             item = self.get_item_number()
 
-            if item == 99:
+            if item == Const.CANCEL_ITEM_USE:
                 return False
 
             self.player_item_use(self.items[item])
             self.items.pop(item)
             return True
         except ValueError as VALUE_ERROR:
-            print(
-                f"Error - {VALUE_ERROR}: input must be a number between 1 and 4, try again.")
+            Errors.log_error(VALUE_ERROR, Errors.VALUE_ERROR)
 
     def player_item_use(self, item: Items):
-        """Item use"""
+        """Handles the use of an item"""
         if item == Items.HEALTH_POTION:
-            potion_ammount = 100 * self.level
-            self.increase_health(potion_ammount)
+            potion_amount = Const.PLAYER_POTION_BASE * self.level
+            self.increase_health(potion_amount)
             print(
-                f'You have been giving 25 health.\nYour health is now {self.get_health()}\n')
+                f'You have been giving {potion_amount} health.\nYour health is now {self.get_health()}\n')
         elif item == Items.INCREASE_DAMAGE:
-            self.damage_adder = random.randint(50, 100) * self.level
+            self.damage_adder = random.randint(
+                Const.PLAYER_MIN_DAMAGE_ADDER, Const.PLAYER_MAX_DAMAGE_ADDER) * self.level
             self.damage_adder_bool = True
             print('Increase damage for one round')
         elif item == Items.UNTOUCHABLE:
             self.untouchable = True
+            print('Untouchable for one round')
+        elif item == Items.THREE_HIT_COMBO:
+            self.three_hit_combo = True
             print('Untouchable for one round')
 
     def round_item_use(self, type: Items):
@@ -155,18 +233,27 @@ class Player:
                 self.untouchable = False
                 return True
             return False
+        elif type == Items.THREE_HIT_COMBO:
+            if self.three_hit_combo:
+                self.three_hit_combo = False
+                return 3
+            return 1
 
     def random_health_increase(self, level) -> None:
-        health = random.randint(80, 120) * level
+        """Applies a random health to the player"""
+        health = random.randint(
+            Const.PLAYER_MIN_HEALTH_INCREASE, Const.PLAYER_MAX_HEALTH_INCREASE) * level
         print(f'\nHealth increase by {health + 100}')
         self.increase_health(health)
         return
 
 
 class Demon:
-    def __init__(self, health) -> None:
+    """Class for demon"""
+
+    def __init__(self) -> None:
         self.name = 'Demon'
-        self.health = health
+        self.health = Const.DEMON_STARTING_HEALTH
 
     def get_name(self) -> str:
         return self.name
@@ -184,9 +271,11 @@ class Demon:
 
 
 class King:
+    """Class for the King"""
+
     def __init__(self) -> None:
         self.name = 'King'
-        self.health = 10000
+        self.health = Const.KING_STARTING_HEALTH
 
     def get_name(self) -> str:
         return self.name
@@ -203,27 +292,58 @@ class King:
         return
 
 
-def initiate_fight(villain: object, player: Player, game_state: GameState) -> None:
+def player_attack(player: Player, villain: object, level: int, num_of_hits: int) -> None:
+    for num in range(0, num_of_hits):
+        critical_strike = [0, 0, random.randint(
+            1, 5) * level, random.randint(5, 10) * level]
+        hit = random.randint(Const.MINIMUM_HIT_POINTS *
+                             level, Const.MAXIMUM_HIT_POINTS * level)
+
+        # damage increase shouldn't be able to be used if three hit combo is also being used
+        damage_increase = player.round_item_use(Items.INCREASE_DAMAGE)
+        hit += damage_increase
+        hit += critical_strike[num]
+
+        print(level)
+
+        print(
+            f'\n{player.get_name()} is attacking the {villain.get_name()} for {hit}\n')
+        villain.decrease_health(hit)
+
+
+def villain_attack(player: Player, villain: object, level: int) -> None:
+    hit = random.randint(Const.MINIMUM_HIT_POINTS *
+                         level, Const.MAXIMUM_HIT_POINTS * level)
+
+    untouchable = player.round_item_use(Items.UNTOUCHABLE)
+
+    if untouchable:
+        hit = 0
+
+    print(f'\n{villain.get_name()} is attacking the {player.get_name()} for {hit}\n')
+    player.decrease_health(hit)
+
+
+def initiate_fight_loop(villain: object, player: Player, game_state: GameState) -> None:
+    """This is the main fighting loop"""
+    # TODO: This could use a refactor
     while True:
         os.system('cls')
         level = game_state.get_level()
         print(
             f'\n{player.get_name()} Health: {player.get_health()}\n{villain.get_name()} Health: {villain.get_health()}\n')
-        move = player.attack_or_items()
 
-        if not move:
-            sleep(2)
-            continue
+        if player.get_number_of_items() > 0:
+            # may not have to return a message if there are no items to be used since we wont have to use the menu if the length is 0
+            move = player.attack_or_items()
 
-        print(game_state.level)
+            if not move:
+                sleep(2)
+                continue
 
-        hit = random.randint(15 * level, 30 * level)
+        combo = player.round_item_use(Items.THREE_HIT_COMBO)
 
-        damage_increase = player.round_item_use(Items.INCREASE_DAMAGE)
-        hit += damage_increase
-
-        print(f'{player.get_name()} is attacking the {villain.get_name()} for {hit}')
-        villain.decrease_health(hit)
+        player_attack(player, villain, game_state.level, combo)
 
         if villain.health <= 0:
             if villain.name == 'King':
@@ -233,32 +353,28 @@ def initiate_fight(villain: object, player: Player, game_state: GameState) -> No
 
             player.increase_health(150)
             player.random_health_increase(level)
-            player.item_drop(2)
+            game_level_up(game_state, player)
+
+            # drops increase by the game state level
+            player.item_drop(
+                Const.PLAYER_NUMBER_OF_ITEMS_DROPPED[game_state.level])
             return
 
-        hit = random.randint(15 * level, 30 * level)
-
-        untouchable = player.round_item_use(Items.UNTOUCHABLE)
-
-        if untouchable:
-            hit = 0
-
-        print(f'{villain.get_name()} is attacking the {player.get_name()} for {hit}')
-        player.health -= hit
-        player.decrease_health(hit)
+        villain_attack(player, villain, game_state.level)
 
         if player.get_health() <= 0:
-            print('You lose...')
+            print('You died...')
             exit()
 
+        # game state level increases by 5 each round of attack or item use when facing the King
         if villain.get_name() == 'King':
             game_level_up(game_state, player, 5)
 
         sleep(2)
-        os.system('cls')
 
 
 def get_room(room: Rooms) -> str:
+    """Returns the room name in string format"""
     if room == Rooms.CENTRAL_WING:
         return 'Central Wing'
     elif room == Rooms.NORTH_WING:
@@ -278,12 +394,14 @@ def get_room(room: Rooms) -> str:
 
 
 def display_room_possibilities(current_room: Rooms, *args):
+    """Output room possibilities from the incoming tuple"""
     print(f'\nYou are in {get_room(current_room)}, and can move to:\n')
     for room in args[0]:
         print(f'{room.value}: {get_room(room)}')
 
 
-def room_movement(player: Player):
+def possible_room_locations(player: Player) -> Rooms:
+    """Returns all possible room locations you can move to depending on which room you are currently in"""
     new_room = None
     room_possibilities = None
 
@@ -306,27 +424,28 @@ def room_movement(player: Player):
         room_possibilities = [Rooms.NORTH_WING]
 
     display_room_possibilities(player.position, room_possibilities)
-    new_room = movement_option(room_possibilities)
+    new_room = movement(room_possibilities)
 
     player.position = new_room
     return new_room
 
 
-def movement_option(*args) -> Rooms:
+def movement(*args) -> Rooms:
+    """Handles movement between rooms"""
     while True:
         try:
             room = Rooms(int(input("\nChoose a room: ")))
             if room not in args[0]:
-                print('\nRoom not availible try again...\n')
+                print('\nRoom not available try again...\n')
                 continue
             return room
 
         except ValueError as VALUE_ERROR:
-            print(
-                f"Error - {VALUE_ERROR}: input must be a number between 1 and 4, try again.")
+            Errors.log_error(VALUE_ERROR, Errors.VALUE_ERROR)
 
 
 def check_if_demon_is_alive(demons: dict, player_position: Rooms) -> bool:
+    """Run a check to see if there are any demons still alive"""
     for demon in demons:
         demon_room = Rooms(int(demon))
         demon_object: Demon = demons[demon]
@@ -339,16 +458,21 @@ def check_if_demon_is_alive(demons: dict, player_position: Rooms) -> bool:
     return False, None
 
 
-def demons_get_stronger(demons: dict, level: int):
-    health = random.randint(50, 80) * level
+def demons_get_stronger(demons: dict, level: int) -> None:
+    """Search for demons who are still alive and increase their health"""
+    health = random.randint(Const.DEMON_MIN_HEALTH_INCREASE,
+                            Const.DEMON_MAX_HEALTH_INCREASE) * level
     for demon in demons:
         obj = demons[demon]
         if obj.health > 0:
             obj.health += health
     print(f'Demons grow stronger! Living demons gained {health} health')
+    return
 
 
 def king_caution(check) -> bool:
+    """Logic to check if you want to face the king before killing the rest of the demons"""
+    # behavior to ignore this logic if all the demons have been killed
     if not check:
         return True
 
@@ -369,51 +493,53 @@ def king_caution(check) -> bool:
 
 
 def game_level_up(game_state: GameState, player: Player, level=1) -> None:
+    """Raises the game state level"""
+    # TODO: there is some duplication here, we could probably store a single level in the game state and inherit
     game_state.level_up(level)
     player.raise_level(game_state)
 
 
 def main():
-    player = Player('Angel', Rooms.CENTRAL_WING, 100)
+    """Main game loop"""
+    player = Player('Angel', Rooms.CENTRAL_WING)
     demons = {
-        '1': Demon(100),
-        '2': Demon(100),
-        '3': Demon(100),
-        '4': Demon(100),
-        '5': Demon(100),
-        '6': Demon(100),
-        '7': Demon(100),
+        '1': Demon(),
+        '2': Demon(),
+        '3': Demon(),
+        '4': Demon(),
+        '5': Demon(),
+        '6': Demon(),
+        '7': Demon(),
     }
     king = King()
     game_state = GameState()
 
-    player.item_drop(5)
+    print(Const.MAIN_GAME_TITLE)
 
-    print('Game is starting!')
-    sleep(3)
+    player.item_drop(Const.PLAYER_NUMBER_OF_ITEMS_DROPPED[game_state.level])
 
+    print('Loading game...')
+    sleep(7)
+
+    # first go before entering the main loop
     check, demon = check_if_demon_is_alive(demons, player.position)
     if check:
-        initiate_fight(demon, player, game_state)
+        initiate_fight_loop(demon, player, game_state)
         demons_get_stronger(demons, game_state.level)
-        game_level_up(game_state, player)
 
+    # games main loop
     while True:
-        player_position = room_movement(player)
+        player_position = possible_room_locations(player)
 
         check, demon = check_if_demon_is_alive(demons, player_position)
         if check:
-            initiate_fight(demon, player, game_state)
+            initiate_fight_loop(demon, player, game_state)
             demons_get_stronger(demons, game_state.level)
-            game_level_up(game_state, player)
+
         elif player_position == Rooms.DUNGEON:
             if king_caution(check):
-                game_level_up(game_state, player)
-                player.increase_health(1500)
-                player.item_drop(4)
-                initiate_fight(king, player, game_state)
-                print('Game Over, you win!!! Congrats!')
-                exit()
+                player.increase_health(Const.PLAYER_FINAL_HEALTH_INCREASE)
+                initiate_fight_loop(king, player, game_state)
             player.position = Rooms.NORTH_WING
 
 
