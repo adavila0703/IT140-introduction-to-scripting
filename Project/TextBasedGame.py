@@ -30,8 +30,8 @@ class Rooms(Enum):
     WEST_WING = 3
     SOUTH_WING = 4
     EAST_WING = 5
-    SOUTH_EAST_WING = 6
-    NORTH_EAST_WING = 7
+    SOUTHEAST_WING = 6
+    NORTHEAST_WING = 7
     DUNGEON = 8
 
 
@@ -385,9 +385,9 @@ def get_room(room: Rooms) -> str:
         return 'South Wing'
     elif room == Rooms.EAST_WING:
         return 'East Wing'
-    elif room == Rooms.SOUTH_EAST_WING:
+    elif room == Rooms.SOUTHEAST_WING:
         return 'South East Wing'
-    elif room == Rooms.NORTH_EAST_WING:
+    elif room == Rooms.NORTHEAST_WING:
         return 'North East Wing'
     elif room == Rooms.DUNGEON:
         return 'Dungeon'
@@ -413,12 +413,12 @@ def possible_room_locations(player: Player) -> Rooms:
     elif player.position == Rooms.WEST_WING:
         room_possibilities = [Rooms.CENTRAL_WING]
     elif player.position == Rooms.SOUTH_WING:
-        room_possibilities = [Rooms.CENTRAL_WING, Rooms.SOUTH_EAST_WING]
+        room_possibilities = [Rooms.CENTRAL_WING, Rooms.SOUTHEAST_WING]
     elif player.position == Rooms.EAST_WING:
-        room_possibilities = [Rooms.CENTRAL_WING, Rooms.NORTH_EAST_WING]
-    elif player.position == Rooms.NORTH_EAST_WING:
+        room_possibilities = [Rooms.CENTRAL_WING, Rooms.NORTHEAST_WING]
+    elif player.position == Rooms.NORTHEAST_WING:
         room_possibilities = [Rooms.EAST_WING]
-    elif player.position == Rooms.SOUTH_EAST_WING:
+    elif player.position == Rooms.SOUTHEAST_WING:
         room_possibilities = [Rooms.SOUTH_WING]
     elif player.position == Rooms.DUNGEON:
         room_possibilities = [Rooms.NORTH_WING]
